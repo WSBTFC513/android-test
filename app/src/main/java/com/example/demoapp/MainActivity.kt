@@ -17,8 +17,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.demoapp.ui.theme.DemoAppTheme
+import kotlin.concurrent.thread
+
+var getCredentials: GetCredentials? = null
 
 class MainActivity : ComponentActivity() {
+    private companion object {
+        const val TAG = "MainActivity"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -32,6 +39,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+        getCredentials = GetCredentials()
     }
 }
 
@@ -44,7 +52,10 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
         )
         Button(
             onClick = {
-                HttpClientModule()
+                thread {
+                    getCredentials?.get()
+                    return@thread
+                }
             },
         ) {
             Box(Modifier.size(60.dp)) {
